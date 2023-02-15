@@ -1,4 +1,4 @@
-use ethers_core::abi::Uint;
+use ethers_core::{abi::Uint, types::TransactionReceipt};
 
 pub struct TotalSupplyOutput {
     pub total_supply: Uint,
@@ -18,4 +18,8 @@ pub struct NameOutput {
 
 pub struct SymbolOutput {
     pub symbol: String,
+}
+
+pub struct ReceiptOutput {
+    pub receipt: TransactionReceipt,
 }
