@@ -12,17 +12,35 @@ use ethers_providers::{Http, Middleware, Provider, GOERLI};
 use ethers_signers::{coins_bip39::English, LocalWallet, MnemonicBuilder, Signer, Wallet};
 use eyre::Result;
 use std::env;
+use dotenv::dotenv;
 
 mod abi_file;
 mod calls;
+mod config;
 mod types;
 
 #[tokio::main]
 async fn main() -> Result<()> {
     // -----------------------------------------------CONSTANTS ----------------------------------------------------------
-    let contract_address = "0x5209A9A17e0A54615D3C24C92570fB5b9B14AB1b".parse::<Address>()?;
+    dotenv().ok();
+    let env = config::init();
 
-    let account_address = "0xbE6157bC090536ee15763356Ac11be00b15951E3".parse::<Address>()?;
+    // let contract_address = match env::var("CONTRACT_ADDRESS") {
+    //     Ok(var) => var.parse::<Address>()?,
+    //     Err(_) => panic!("CONTRACT_ADDRESS {}", panic_message)
+    // };
+    // let account_address = match env::var("ACCOUNT_ADDRESS") {
+    //     Ok(var) => var.parse::<Address>()?,
+    //     Err(_) => panic!("ACCOUNT_ADDRESS {}", panic_message)
+    // };
+    // let private_key = match env::var("PRIVATE_KEY") {
+    //     Ok(var) => var,
+    //     Err(_) => panic!("PRIVATE_KEY {}", panic_message)
+    // };
+    
+    // let contract_address = "0x5209A9A17e0A54615D3C24C92570fB5b9B14AB1b".parse::<Address>()?;
+
+    // let account_address = "0xbE6157bC090536ee15763356Ac11be00b15951E3".parse::<Address>()?;
 
     //-------------------------------------------SUCCESSFULL TESTS-------------------------------------------------------
 
@@ -46,9 +64,10 @@ async fn main() -> Result<()> {
     let abi = abi_file::init().abi;
     println!("1. OBTENIDO EL ABI");
 
+    println!("{:#?}", env);
+
     let provider = GOERLI.provider();
-    let wallet: LocalWallet =
-        "a0554bccb5a4cbd6e2f74754f66deee5410b67806361e629d1a71299abc8f6db".parse()?;
+    let wallet: LocalWallet = env.private_key.parse()?;
 
     let wallet = wallet.with_chain_id(5 as u64);
 
@@ -57,12 +76,12 @@ async fn main() -> Result<()> {
     let ba = client.get_chainid().await.unwrap();
     println!("EL CHAIN ID DEL CLIENT ES: {:#?}", ba);
 
-    let contract = Contract::new(contract_address, abi, client);
+    let contract = Contract::new(env.contract_address, abi, client);
     println!("2. CREADO EL CONTRATO");
 
     // Non-constant methods are executed via the `send()` call on the method builder.
     let mut tx =
-        contract.method::<_, (Address, U256)>("mintTo", (account_address, U256::from(10000000)))?;
+        contract.method::<_, (Address, U256)>("mintTo", (env.account_address, U256::from(10000000)))?;
 
     tx.tx.set_chain_id(5);
 
