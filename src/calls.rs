@@ -1,12 +1,12 @@
 use crate::abi_file;
 use crate::types::*;
-use ethers_contract::Contract;
-use ethers_core::types::U256;
-use ethers_core::{types::Address, utils::parse_bytes32_string};
-use ethers_middleware::signer::SignerMiddleware;
-use ethers_providers::GOERLI;
-use ethers_signers::LocalWallet;
-use ethers_signers::Signer;
+use ethers::contract::Contract;
+use ethers::core::types::U256;
+use ethers::core::{types::Address, utils::parse_bytes32_string};
+use ethers::middleware::signer::SignerMiddleware;
+use ethers::providers::GOERLI;
+use ethers::signers::LocalWallet;
+use ethers::signers::Signer;
 use eyre::Result;
 
 // This represents the provider chain in this case Goerli

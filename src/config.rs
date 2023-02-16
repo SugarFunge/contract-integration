@@ -1,4 +1,4 @@
-use ethers_core::types::Address;
+use ethers::core::types::Address;
 use std::env;
 
 #[derive(Clone, Debug)]

@@ -1,4 +1,4 @@
-use ethers_core::{abi::Uint, types::TransactionReceipt};
+use ethers::core::{abi::Uint, types::TransactionReceipt};
 
 pub struct TotalSupplyOutput {
     pub total_supply: Uint,
