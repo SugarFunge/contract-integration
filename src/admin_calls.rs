@@ -61,10 +61,7 @@ pub async fn contract_type() -> Result<ContractTypeOutput> {
     })
 }
 
-pub async fn allowance(
-    owner_address: Address,
-    spender_address: Address,
-) -> Result<AllowanceOutput> {
+pub async fn allowance(owner_address: &str, spender_address: &str) -> Result<AllowanceOutput> {
     dotenv().ok();
     let env = config::init();
     let abi = abi_file::init().abi;
@@ -80,7 +77,13 @@ pub async fn allowance(
     let contract = Contract::new(env.contract_address, abi, client);
     println!("2. CREADO EL CONTRATO");
     let value = contract
-        .method::<_, _>("allowance", (owner_address, spender_address))?
+        .method::<_, _>(
+            "allowance",
+            (
+                owner_address.parse::<Address>()?,
+                spender_address.parse::<Address>()?,
+            ),
+        )?
         .call()
         .await?;
     println!("3. OBTENIDA LA RESPUESTA DEL ENDPOINT: {}", value);
@@ -128,8 +131,6 @@ pub async fn symbol() -> Result<SymbolOutput> {
 }
 
 pub async fn mint_to(account_address: &str, amount: U256) -> Result<ReceiptOutput> {
-    let acccount = account_address.parse::<Address>()?;
-
     dotenv().ok();
     let env = config::init();
 
@@ -146,7 +147,8 @@ pub async fn mint_to(account_address: &str, amount: U256) -> Result<ReceiptOutpu
     let contract = Contract::new(env.contract_address, abi, client);
     println!("2. CREADO EL CONTRATO");
 
-    let mut tx = contract.method::<_, (Address, U256)>("mintTo", (acccount, amount))?;
+    let mut tx = contract
+        .method::<_, (Address, U256)>("mintTo", (account_address.parse::<Address>()?, amount))?;
     tx.tx.set_chain_id(CHAIN_ID);
 
     let pending_tx = tx.send().await?;
@@ -159,7 +161,6 @@ pub async fn mint_to(account_address: &str, amount: U256) -> Result<ReceiptOutpu
 }
 
 pub async fn increase_allowance(spender_address: &str, amount: U256) -> Result<ReceiptOutput> {
-    let spender = spender_address.parse::<Address>()?;
     dotenv().ok();
     let env = config::init();
     let abi = abi_file::init().abi;
@@ -175,7 +176,10 @@ pub async fn increase_allowance(spender_address: &str, amount: U256) -> Result<R
     let contract = Contract::new(env.contract_address, abi, client);
     println!("2. CREADO EL CONTRATO");
 
-    let mut tx = contract.method::<_, (Address, U256)>("increaseAllowance", (spender, amount))?;
+    let mut tx = contract.method::<_, (Address, U256)>(
+        "increaseAllowance",
+        (spender_address.parse::<Address>()?, amount),
+    )?;
     tx.tx.set_chain_id(CHAIN_ID);
 
     let pending_tx = tx.send().await?;
@@ -188,7 +192,6 @@ pub async fn increase_allowance(spender_address: &str, amount: U256) -> Result<R
 }
 
 pub async fn decrease_allowance(spender_address: &str, amount: U256) -> Result<ReceiptOutput> {
-    let spender = spender_address.parse::<Address>()?;
     dotenv().ok();
     let env = config::init();
     let abi = abi_file::init().abi;
@@ -204,7 +207,10 @@ pub async fn decrease_allowance(spender_address: &str, amount: U256) -> Result<R
     let contract = Contract::new(env.contract_address, abi, client);
     println!("2. CREADO EL CONTRATO");
 
-    let mut tx = contract.method::<_, (Address, U256)>("decreaseAllowance", (spender, amount))?;
+    let mut tx = contract.method::<_, (Address, U256)>(
+        "decreaseAllowance",
+        (spender_address.parse::<Address>()?, amount),
+    )?;
     tx.tx.set_chain_id(CHAIN_ID);
 
     let pending_tx = tx.send().await?;
@@ -217,7 +223,6 @@ pub async fn decrease_allowance(spender_address: &str, amount: U256) -> Result<R
 }
 
 pub async fn burn_from(account_address: &str, amount: U256) -> Result<ReceiptOutput> {
-    let acccount = account_address.parse::<Address>()?;
     dotenv().ok();
     let env = config::init();
     let abi = abi_file::init().abi;
@@ -233,7 +238,8 @@ pub async fn burn_from(account_address: &str, amount: U256) -> Result<ReceiptOut
     let contract = Contract::new(env.contract_address, abi, client);
     println!("2. CREADO EL CONTRATO");
 
-    let mut tx = contract.method::<_, (Address, U256)>("burnFrom", (acccount, amount))?;
+    let mut tx = contract
+        .method::<_, (Address, U256)>("burnFrom", (account_address.parse::<Address>()?, amount))?;
     tx.tx.set_chain_id(CHAIN_ID);
 
     let pending_tx = tx.send().await?;
@@ -246,7 +252,6 @@ pub async fn burn_from(account_address: &str, amount: U256) -> Result<ReceiptOut
 }
 
 pub async fn transfer(account_address: &str, amount: U256) -> Result<ReceiptOutput> {
-    let acccount = account_address.parse::<Address>()?;
     dotenv().ok();
     let env = config::init();
     let abi = abi_file::init().abi;
@@ -262,7 +267,8 @@ pub async fn transfer(account_address: &str, amount: U256) -> Result<ReceiptOutp
     let contract = Contract::new(env.contract_address, abi, client);
     println!("2. CREADO EL CONTRATO");
 
-    let mut tx = contract.method::<_, (Address, U256)>("transfer", (acccount, amount))?;
+    let mut tx = contract
+        .method::<_, (Address, U256)>("transfer", (account_address.parse::<Address>()?, amount))?;
     tx.tx.set_chain_id(CHAIN_ID);
 
     let pending_tx = tx.send().await?;
