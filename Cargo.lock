@@ -391,6 +391,7 @@ dependencies = [
  "dotenv",
  "ethers",
  "eyre",
+ "serde",
  "serde_json",
  "tokio",
 ]
