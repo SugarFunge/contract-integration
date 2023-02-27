@@ -22,7 +22,7 @@ pub async fn total_supply() -> Result<TotalSupplyOutput> {
 
     let provider = GOERLI.provider();
 
-    let wallet: LocalWallet = env.private_key.parse()?;
+    let wallet: LocalWallet = env.private_key.as_str().parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
 
     let client = SignerMiddleware::new(provider, wallet);
@@ -44,7 +44,7 @@ pub async fn contract_type() -> Result<ContractTypeOutput> {
 
     let provider = GOERLI.provider();
 
-    let wallet: LocalWallet = env.private_key.parse()?;
+    let wallet: LocalWallet = env.private_key.as_str().parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
 
     let client = SignerMiddleware::new(provider, wallet);
@@ -69,7 +69,7 @@ pub async fn allowance(owner_address: &str, spender_address: &str) -> Result<All
 
     let provider = GOERLI.provider();
 
-    let wallet: LocalWallet = env.private_key.parse()?;
+    let wallet: LocalWallet = env.private_key.as_str().parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
 
     let client = SignerMiddleware::new(provider, wallet);
@@ -98,7 +98,7 @@ pub async fn name() -> Result<NameOutput> {
 
     let provider = GOERLI.provider();
 
-    let wallet: LocalWallet = env.private_key.parse()?;
+    let wallet: LocalWallet = env.private_key.as_str().parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
 
     let client = SignerMiddleware::new(provider, wallet);
@@ -118,7 +118,7 @@ pub async fn symbol() -> Result<SymbolOutput> {
 
     let provider = GOERLI.provider();
 
-    let wallet: LocalWallet = env.private_key.parse()?;
+    let wallet: LocalWallet = env.private_key.as_str().parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
 
     let client = SignerMiddleware::new(provider, wallet);
@@ -139,7 +139,7 @@ pub async fn mint_to(account_address: &str, amount: U256) -> Result<ReceiptOutpu
 
     let provider = GOERLI.provider();
 
-    let wallet: LocalWallet = env.private_key.parse()?;
+    let wallet: LocalWallet = env.private_key.as_str().parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
 
     let client = SignerMiddleware::new(provider, wallet);
@@ -168,7 +168,7 @@ pub async fn increase_allowance(spender_address: &str, amount: U256) -> Result<R
 
     let provider = GOERLI.provider();
 
-    let wallet: LocalWallet = env.private_key.parse()?;
+    let wallet: LocalWallet = env.private_key.as_str().parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
 
     let client = SignerMiddleware::new(provider, wallet);
@@ -199,7 +199,7 @@ pub async fn decrease_allowance(spender_address: &str, amount: U256) -> Result<R
 
     let provider = GOERLI.provider();
 
-    let wallet: LocalWallet = env.private_key.parse()?;
+    let wallet: LocalWallet = env.private_key.as_str().parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
 
     let client = SignerMiddleware::new(provider, wallet);
@@ -230,7 +230,7 @@ pub async fn burn_from(account_address: &str, amount: U256) -> Result<ReceiptOut
 
     let provider = GOERLI.provider();
 
-    let wallet: LocalWallet = env.private_key.parse()?;
+    let wallet: LocalWallet = env.private_key.as_str().parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
 
     let client = SignerMiddleware::new(provider, wallet);
@@ -259,7 +259,7 @@ pub async fn transfer(account_address: &str, amount: U256) -> Result<ReceiptOutp
 
     let provider = GOERLI.provider();
 
-    let wallet: LocalWallet = env.private_key.parse()?;
+    let wallet: LocalWallet = env.private_key.as_str().parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
 
     let client = SignerMiddleware::new(provider, wallet);
