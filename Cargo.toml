@@ -6,11 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ethers-contract = "1.0.2"
-ethers-core = "1.0.2"
-ethers-providers = "1.0.2"
-ethers-signers = "1.0.2"
-ethers-middleware = "1.0.2"
+serde = { version = "1.0", features = ["derive"] }
+ethers = "1.0.2"
 serde_json = "1.0.93"
 eyre = "0.6.6"
 tokio = { version = "1.17.0", features = ["macros"] }

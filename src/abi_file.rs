@@ -1,9 +1,7 @@
-use ethers_core::{
-    abi::Abi
-};
+use ethers::core::abi::Abi;
 
 pub struct Contract {
-    pub abi: Abi
+    pub abi: Abi,
 }
 
 pub fn init() -> Contract {
@@ -1356,6 +1354,7 @@ pub fn init() -> Contract {
                     "stateMutability": "view"
                   }
                 ]"#,
-        ).unwrap()
+        )
+        .unwrap(),
     }
 }
