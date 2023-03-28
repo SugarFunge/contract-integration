@@ -4,19 +4,20 @@ use ethers::contract::Contract;
 use ethers::core::types::U256;
 use ethers::core::{types::Address, utils::parse_bytes32_string};
 use ethers::middleware::signer::SignerMiddleware;
-use ethers::providers::GOERLI;
+use ethers::providers::Provider;
 use ethers::signers::LocalWallet;
 use ethers::signers::Signer;
 use eyre::Result;
 
 // This represents the provider chain in this case Goerli
 const CHAIN_ID: u64 = 5;
+// This representen the URL of the Ethereum Node
+const URL_ID: &str = "https://nd-776-423-051.p2pify.com/e34b9f9ebf64e6dadaa4a2774a1e5d74";
 
 pub async fn total_supply(private_key: &str, contract_address: &str) -> Result<TotalSupplyOutput> {
     let abi = abi_file::init().abi;
-    println!("1. OBTENIDO EL ABI");
 
-    let provider = GOERLI.provider();
+    let provider = Provider::try_from(URL_ID)?;
 
     let wallet: LocalWallet = private_key.parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
@@ -24,9 +25,9 @@ pub async fn total_supply(private_key: &str, contract_address: &str) -> Result<T
     let client = SignerMiddleware::new(provider, wallet);
 
     let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-    println!("2. CREADO EL CONTRATO");
+
     let value = contract.method::<_, _>("totalSupply", ())?.call().await?;
-    println!("3. OBTENIDA LA RESPUESTA DEL ENDPOINT: {}", value);
+
     Ok(TotalSupplyOutput {
         total_supply: value,
     })
@@ -37,9 +38,8 @@ pub async fn contract_type(
     contract_address: &str,
 ) -> Result<ContractTypeOutput> {
     let abi = abi_file::init().abi;
-    println!("1. OBTENIDO EL ABI");
 
-    let provider = GOERLI.provider();
+    let provider = Provider::try_from(URL_ID)?;
 
     let wallet: LocalWallet = private_key.parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
@@ -47,12 +47,9 @@ pub async fn contract_type(
     let client = SignerMiddleware::new(provider, wallet);
 
     let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-    println!("2. CREADO EL CONTRATO");
+
     let value: [u8; 32] = contract.method::<_, _>("contractType", ())?.call().await?;
-    println!(
-        "3. OBTENIDA LA RESPUESTA DEL ENDPOINT: {:#?}",
-        parse_bytes32_string(&value)
-    );
+
     Ok(ContractTypeOutput {
         contract_type: String::from(parse_bytes32_string(&value).unwrap()),
     })
@@ -65,9 +62,8 @@ pub async fn allowance(
     spender_address: &str,
 ) -> Result<AllowanceOutput> {
     let abi = abi_file::init().abi;
-    println!("1. OBTENIDO EL ABI");
 
-    let provider = GOERLI.provider();
+    let provider = Provider::try_from(URL_ID)?;
 
     let wallet: LocalWallet = private_key.parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
@@ -75,7 +71,7 @@ pub async fn allowance(
     let client = SignerMiddleware::new(provider, wallet);
 
     let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-    println!("2. CREADO EL CONTRATO");
+
     let value = contract
         .method::<_, _>(
             "allowance",
@@ -86,15 +82,14 @@ pub async fn allowance(
         )?
         .call()
         .await?;
-    println!("3. OBTENIDA LA RESPUESTA DEL ENDPOINT: {}", value);
+
     Ok(AllowanceOutput { allowance: value })
 }
 
 pub async fn name(private_key: &str, contract_address: &str) -> Result<NameOutput> {
     let abi = abi_file::init().abi;
-    println!("1. OBTENIDO EL ABI");
 
-    let provider = GOERLI.provider();
+    let provider = Provider::try_from(URL_ID)?;
 
     let wallet: LocalWallet = private_key.parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
@@ -102,17 +97,16 @@ pub async fn name(private_key: &str, contract_address: &str) -> Result<NameOutpu
     let client = SignerMiddleware::new(provider, wallet);
 
     let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-    println!("2. CREADO EL CONTRATO");
+
     let value: String = contract.method::<_, _>("name", ())?.call().await?;
-    println!("3. OBTENIDA LA RESPUESTA DEL ENDPOINT: {}", value);
+
     Ok(NameOutput { name: value })
 }
 
 pub async fn symbol(private_key: &str, contract_address: &str) -> Result<SymbolOutput> {
     let abi = abi_file::init().abi;
-    println!("1. OBTENIDO EL ABI");
 
-    let provider = GOERLI.provider();
+    let provider = Provider::try_from(URL_ID)?;
 
     let wallet: LocalWallet = private_key.parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
@@ -120,9 +114,9 @@ pub async fn symbol(private_key: &str, contract_address: &str) -> Result<SymbolO
     let client = SignerMiddleware::new(provider, wallet);
 
     let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-    println!("2. CREADO EL CONTRATO");
+
     let value: String = contract.method::<_, _>("symbol", ())?.call().await?;
-    println!("3. OBTENIDA LA RESPUESTA DEL ENDPOINT: {}", value);
+
     Ok(SymbolOutput { symbol: value })
 }
 
@@ -133,9 +127,8 @@ pub async fn mint_to(
     amount: U256,
 ) -> Result<ReceiptOutput> {
     let abi = abi_file::init().abi;
-    println!("1. OBTENIDO EL ABI");
 
-    let provider = GOERLI.provider();
+    let provider = Provider::try_from(URL_ID)?;
 
     let wallet: LocalWallet = private_key.parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
@@ -143,7 +136,6 @@ pub async fn mint_to(
     let client = SignerMiddleware::new(provider, wallet);
 
     let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-    println!("2. CREADO EL CONTRATO");
 
     let mut tx = contract
         .method::<_, (Address, U256)>("mintTo", (account_address.parse::<Address>()?, amount))?;
@@ -152,7 +144,6 @@ pub async fn mint_to(
     let pending_tx = tx.send().await?;
     let receipt = pending_tx.confirmations(6).await?;
 
-    println!("3. OBTENIDA LA RESPUESTA DEL ENDPOINT: {:#?}", receipt);
     Ok(ReceiptOutput {
         receipt: receipt.unwrap(),
     })
@@ -165,9 +156,8 @@ pub async fn increase_allowance(
     amount: U256,
 ) -> Result<ReceiptOutput> {
     let abi = abi_file::init().abi;
-    println!("1. OBTENIDO EL ABI");
 
-    let provider = GOERLI.provider();
+    let provider = Provider::try_from(URL_ID)?;
 
     let wallet: LocalWallet = private_key.parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
@@ -175,7 +165,6 @@ pub async fn increase_allowance(
     let client = SignerMiddleware::new(provider, wallet);
 
     let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-    println!("2. CREADO EL CONTRATO");
 
     let mut tx = contract.method::<_, (Address, U256)>(
         "increaseAllowance",
@@ -186,7 +175,6 @@ pub async fn increase_allowance(
     let pending_tx = tx.send().await?;
     let receipt = pending_tx.confirmations(6).await?;
 
-    println!("3. OBTENIDA LA RESPUESTA DEL ENDPOINT: {:#?}", receipt);
     Ok(ReceiptOutput {
         receipt: receipt.unwrap(),
     })
@@ -199,9 +187,8 @@ pub async fn decrease_allowance(
     amount: U256,
 ) -> Result<ReceiptOutput> {
     let abi = abi_file::init().abi;
-    println!("1. OBTENIDO EL ABI");
 
-    let provider = GOERLI.provider();
+    let provider = Provider::try_from(URL_ID)?;
 
     let wallet: LocalWallet = private_key.parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
@@ -209,7 +196,6 @@ pub async fn decrease_allowance(
     let client = SignerMiddleware::new(provider, wallet);
 
     let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-    println!("2. CREADO EL CONTRATO");
 
     let mut tx = contract.method::<_, (Address, U256)>(
         "decreaseAllowance",
@@ -220,7 +206,6 @@ pub async fn decrease_allowance(
     let pending_tx = tx.send().await?;
     let receipt = pending_tx.confirmations(6).await?;
 
-    println!("3. OBTENIDA LA RESPUESTA DEL ENDPOINT: {:#?}", receipt);
     Ok(ReceiptOutput {
         receipt: receipt.unwrap(),
     })
@@ -233,9 +218,8 @@ pub async fn burn_from(
     amount: U256,
 ) -> Result<ReceiptOutput> {
     let abi = abi_file::init().abi;
-    println!("1. OBTENIDO EL ABI");
 
-    let provider = GOERLI.provider();
+    let provider = Provider::try_from(URL_ID)?;
 
     let wallet: LocalWallet = private_key.parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
@@ -243,7 +227,6 @@ pub async fn burn_from(
     let client = SignerMiddleware::new(provider, wallet);
 
     let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-    println!("2. CREADO EL CONTRATO");
 
     let mut tx = contract
         .method::<_, (Address, U256)>("burnFrom", (account_address.parse::<Address>()?, amount))?;
@@ -252,7 +235,6 @@ pub async fn burn_from(
     let pending_tx = tx.send().await?;
     let receipt = pending_tx.confirmations(6).await?;
 
-    println!("3. OBTENIDA LA RESPUESTA DEL ENDPOINT: {:#?}", receipt);
     Ok(ReceiptOutput {
         receipt: receipt.unwrap(),
     })
@@ -265,9 +247,8 @@ pub async fn transfer(
     amount: U256,
 ) -> Result<ReceiptOutput> {
     let abi = abi_file::init().abi;
-    println!("1. OBTENIDO EL ABI");
 
-    let provider = GOERLI.provider();
+    let provider = Provider::try_from(URL_ID)?;
 
     let wallet: LocalWallet = private_key.parse()?;
     let wallet = wallet.with_chain_id(CHAIN_ID);
@@ -275,7 +256,6 @@ pub async fn transfer(
     let client = SignerMiddleware::new(provider, wallet);
 
     let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-    println!("2. CREADO EL CONTRATO");
 
     let mut tx = contract
         .method::<_, (Address, U256)>("transfer", (account_address.parse::<Address>()?, amount))?;
@@ -284,7 +264,6 @@ pub async fn transfer(
     let pending_tx = tx.send().await?;
     let receipt = pending_tx.confirmations(6).await?;
 
-    println!("3. OBTENIDA LA RESPUESTA DEL ENDPOINT: {:#?}", receipt);
     Ok(ReceiptOutput {
         receipt: receipt.unwrap(),
     })
