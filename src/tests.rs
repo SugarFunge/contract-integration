@@ -47,6 +47,7 @@ async fn test_token_symbol() -> Result<()> {
     let _result = calls::symbol(PRIVATE_KEY, CONTRACT_ADDRESS).await?;
     Ok(())
 }
+
 #[tokio::test]
 async fn test_mint_tokens() -> Result<()> {
     let _result = calls::mint_to(
@@ -58,6 +59,7 @@ async fn test_mint_tokens() -> Result<()> {
     .await?;
     Ok(())
 }
+
 #[tokio::test]
 async fn test_increase_allowance() -> Result<()> {
     let _result = calls::increase_allowance(

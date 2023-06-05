@@ -11,20 +11,15 @@ use ethers::signers::LocalWallet;
 use ethers::signers::Signer;
 use eyre::Result;
 
-// This represents the provider chain in this case Goerli
-const CHAIN_ID: u64 = 5;
-// This representen the URL of the Ethereum Node
-const URL_ID: &str = "https://nd-776-423-051.p2pify.com/e34b9f9ebf64e6dadaa4a2774a1e5d74";
-
 pub async fn total_supply() -> Result<TotalSupplyOutput> {
     dotenv().ok();
     let env = config::init();
     let abi = abi_file::init().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
+    let provider = Provider::try_from(env.url_id)?;
 
     let wallet: LocalWallet = env.private_key.as_str().parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
+    let wallet = wallet.with_chain_id(env.chain_id);
 
     let client = SignerMiddleware::new(provider, wallet);
 
@@ -42,10 +37,10 @@ pub async fn contract_type() -> Result<ContractTypeOutput> {
     let env = config::init();
     let abi = abi_file::init().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
+    let provider = Provider::try_from(env.url_id)?;
 
     let wallet: LocalWallet = env.private_key.as_str().parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
+    let wallet = wallet.with_chain_id(env.chain_id);
 
     let client = SignerMiddleware::new(provider, wallet);
 
@@ -63,10 +58,10 @@ pub async fn allowance(owner_address: &str, spender_address: &str) -> Result<All
     let env = config::init();
     let abi = abi_file::init().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
+    let provider = Provider::try_from(env.url_id)?;
 
     let wallet: LocalWallet = env.private_key.as_str().parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
+    let wallet = wallet.with_chain_id(env.chain_id);
 
     let client = SignerMiddleware::new(provider, wallet);
 
@@ -91,10 +86,10 @@ pub async fn name() -> Result<NameOutput> {
     let env = config::init();
     let abi = abi_file::init().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
+    let provider = Provider::try_from(env.url_id)?;
 
     let wallet: LocalWallet = env.private_key.as_str().parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
+    let wallet = wallet.with_chain_id(env.chain_id);
 
     let client = SignerMiddleware::new(provider, wallet);
 
@@ -109,10 +104,10 @@ pub async fn symbol() -> Result<SymbolOutput> {
     let env = config::init();
     let abi = abi_file::init().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
+    let provider = Provider::try_from(env.url_id)?;
 
     let wallet: LocalWallet = env.private_key.as_str().parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
+    let wallet = wallet.with_chain_id(env.chain_id);
 
     let client = SignerMiddleware::new(provider, wallet);
 
@@ -128,10 +123,10 @@ pub async fn mint_to(account_address: &str, amount: U256) -> Result<ReceiptOutpu
     let env = config::init();
     let abi = abi_file::init().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
+    let provider = Provider::try_from(env.url_id)?;
 
     let wallet: LocalWallet = env.private_key.as_str().parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
+    let wallet = wallet.with_chain_id(env.chain_id);
 
     let client = SignerMiddleware::new(provider, wallet);
 
@@ -139,10 +134,10 @@ pub async fn mint_to(account_address: &str, amount: U256) -> Result<ReceiptOutpu
 
     let mut tx = contract
         .method::<_, (Address, U256)>("mintTo", (account_address.parse::<Address>()?, amount))?;
-    tx.tx.set_chain_id(CHAIN_ID);
+    tx.tx.set_chain_id(env.chain_id);
 
     let pending_tx = tx.send().await?;
-    let receipt = pending_tx.confirmations(6).await?;
+    let receipt = pending_tx.confirmations(env.number_confirmations).await?;
 
     Ok(ReceiptOutput {
         receipt: receipt.unwrap(),
@@ -154,10 +149,10 @@ pub async fn increase_allowance(spender_address: &str, amount: U256) -> Result<R
     let env = config::init();
     let abi = abi_file::init().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
+    let provider = Provider::try_from(env.url_id)?;
 
     let wallet: LocalWallet = env.private_key.as_str().parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
+    let wallet = wallet.with_chain_id(env.chain_id);
 
     let client = SignerMiddleware::new(provider, wallet);
 
@@ -167,10 +162,10 @@ pub async fn increase_allowance(spender_address: &str, amount: U256) -> Result<R
         "increaseAllowance",
         (spender_address.parse::<Address>()?, amount),
     )?;
-    tx.tx.set_chain_id(CHAIN_ID);
+    tx.tx.set_chain_id(env.chain_id);
 
     let pending_tx = tx.send().await?;
-    let receipt = pending_tx.confirmations(6).await?;
+    let receipt = pending_tx.confirmations(env.number_confirmations).await?;
 
     Ok(ReceiptOutput {
         receipt: receipt.unwrap(),
@@ -182,10 +177,10 @@ pub async fn decrease_allowance(spender_address: &str, amount: U256) -> Result<R
     let env = config::init();
     let abi = abi_file::init().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
+    let provider = Provider::try_from(env.url_id)?;
 
     let wallet: LocalWallet = env.private_key.as_str().parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
+    let wallet = wallet.with_chain_id(env.chain_id);
 
     let client = SignerMiddleware::new(provider, wallet);
 
@@ -195,10 +190,10 @@ pub async fn decrease_allowance(spender_address: &str, amount: U256) -> Result<R
         "decreaseAllowance",
         (spender_address.parse::<Address>()?, amount),
     )?;
-    tx.tx.set_chain_id(CHAIN_ID);
+    tx.tx.set_chain_id(env.chain_id);
 
     let pending_tx = tx.send().await?;
-    let receipt = pending_tx.confirmations(6).await?;
+    let receipt = pending_tx.confirmations(env.number_confirmations).await?;
 
     Ok(ReceiptOutput {
         receipt: receipt.unwrap(),
@@ -210,10 +205,10 @@ pub async fn burn_from(account_address: &str, amount: U256) -> Result<ReceiptOut
     let env = config::init();
     let abi = abi_file::init().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
+    let provider = Provider::try_from(env.url_id)?;
 
     let wallet: LocalWallet = env.private_key.as_str().parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
+    let wallet = wallet.with_chain_id(env.chain_id);
 
     let client = SignerMiddleware::new(provider, wallet);
 
@@ -221,10 +216,10 @@ pub async fn burn_from(account_address: &str, amount: U256) -> Result<ReceiptOut
 
     let mut tx = contract
         .method::<_, (Address, U256)>("burnFrom", (account_address.parse::<Address>()?, amount))?;
-    tx.tx.set_chain_id(CHAIN_ID);
+    tx.tx.set_chain_id(env.chain_id);
 
     let pending_tx = tx.send().await?;
-    let receipt = pending_tx.confirmations(6).await?;
+    let receipt = pending_tx.confirmations(env.number_confirmations).await?;
 
     Ok(ReceiptOutput {
         receipt: receipt.unwrap(),
@@ -236,10 +231,10 @@ pub async fn transfer(account_address: &str, amount: U256) -> Result<ReceiptOutp
     let env = config::init();
     let abi = abi_file::init().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
+    let provider = Provider::try_from(env.url_id)?;
 
     let wallet: LocalWallet = env.private_key.as_str().parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
+    let wallet = wallet.with_chain_id(env.chain_id);
 
     let client = SignerMiddleware::new(provider, wallet);
 
@@ -247,10 +242,10 @@ pub async fn transfer(account_address: &str, amount: U256) -> Result<ReceiptOutp
 
     let mut tx = contract
         .method::<_, (Address, U256)>("transfer", (account_address.parse::<Address>()?, amount))?;
-    tx.tx.set_chain_id(CHAIN_ID);
+    tx.tx.set_chain_id(env.chain_id);
 
     let pending_tx = tx.send().await?;
-    let receipt = pending_tx.confirmations(6).await?;
+    let receipt = pending_tx.confirmations(env.number_confirmations).await?;
 
     Ok(ReceiptOutput {
         receipt: receipt.unwrap(),
