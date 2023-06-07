@@ -24,13 +24,13 @@ async fn test_mumbai_total_supply() -> Result<()> {
 }
 
 #[tokio::test]
-async fn test_contract_type() -> Result<()> {
+async fn test_goerli_contract_type() -> Result<()> {
     let _result = calls::goerli_contract_type().await?;
     Ok(())
 }
 
 #[tokio::test]
-async fn test_allowance() -> Result<()> {
+async fn test_goerli_allowance() -> Result<()> {
     dotenv().ok();
     let env = config::init();
     let _result = calls::goerli_allowance(&env.account_address, &env.account_address).await?;
@@ -38,13 +38,13 @@ async fn test_allowance() -> Result<()> {
 }
 
 #[tokio::test]
-async fn test_token_name() -> Result<()> {
+async fn test_goerli_token_name() -> Result<()> {
     let _result = calls::goerli_name().await?;
     Ok(())
 }
 
 #[tokio::test]
-async fn test_token_symbol() -> Result<()> {
+async fn test_goerli_token_symbol() -> Result<()> {
     let _result = calls::goerli_symbol().await?;
     Ok(())
 }
@@ -74,7 +74,7 @@ async fn test_mumbai_mint_tokens() -> Result<()> {
 }
 
 #[tokio::test]
-async fn test_increase_allowance() -> Result<()> {
+async fn test_goerli_increase_allowance() -> Result<()> {
     dotenv().ok();
     let env = config::init();
     let _result = calls::goerli_increase_allowance(
@@ -85,7 +85,7 @@ async fn test_increase_allowance() -> Result<()> {
     Ok(())
 }
 #[tokio::test]
-async fn test_decrease_allowance() -> Result<()> {
+async fn test_goerli_decrease_allowance() -> Result<()> {
     dotenv().ok();
     let env = config::init();
     let _result = calls::goerli_decrease_allowance(
@@ -96,7 +96,7 @@ async fn test_decrease_allowance() -> Result<()> {
     Ok(())
 }
 #[tokio::test]
-async fn test_burn_tokens() -> Result<()> {
+async fn test_goerli_burn_tokens() -> Result<()> {
     dotenv().ok();
     let env = config::init();
     let _result = calls::goerli_burn_from(
@@ -107,7 +107,7 @@ async fn test_burn_tokens() -> Result<()> {
     Ok(())
 }
 #[tokio::test]
-async fn test_transfer() -> Result<()> {
+async fn test_goerli_transfer() -> Result<()> {
     dotenv().ok();
     let env = config::init();
     let _result = calls::goerli_transfer(
