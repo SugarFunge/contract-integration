@@ -1,270 +1,359 @@
 use crate::abi_file;
+use crate::config;
+use crate::main_calls::*;
 use crate::types::*;
-use ethers::contract::Contract;
+use dotenv::dotenv;
 use ethers::core::types::U256;
-use ethers::core::{types::Address, utils::parse_bytes32_string};
-use ethers::middleware::signer::SignerMiddleware;
-use ethers::providers::Provider;
-use ethers::signers::LocalWallet;
-use ethers::signers::Signer;
 use eyre::Result;
 
-// This represents the provider chain in this case Goerli
-const CHAIN_ID: u64 = 5;
-// This representen the URL of the Ethereum Node
-const URL_ID: &str = "https://nd-776-423-051.p2pify.com/e34b9f9ebf64e6dadaa4a2774a1e5d74";
+pub async fn goerli_total_supply() -> Result<TotalSupplyOutput> {
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_goerli().abi;
 
-pub async fn total_supply(private_key: &str, contract_address: &str) -> Result<TotalSupplyOutput> {
-    let abi = abi_file::init().abi;
-
-    let provider = Provider::try_from(URL_ID)?;
-
-    let wallet: LocalWallet = private_key.parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
-
-    let client = SignerMiddleware::new(provider, wallet);
-
-    let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-
-    let value = contract.method::<_, _>("totalSupply", ())?.call().await?;
-
-    Ok(TotalSupplyOutput {
-        total_supply: value,
-    })
+    total_supply(
+        &env.private_key,
+        &env.goerli_contract_address,
+        &env.goerli_url_id,
+        5,
+        abi,
+    )
+    .await
 }
 
-pub async fn contract_type(
-    private_key: &str,
-    contract_address: &str,
-) -> Result<ContractTypeOutput> {
-    let abi = abi_file::init().abi;
+pub async fn goerli_contract_type() -> Result<ContractTypeOutput> {
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_goerli().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
-
-    let wallet: LocalWallet = private_key.parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
-
-    let client = SignerMiddleware::new(provider, wallet);
-
-    let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-
-    let value: [u8; 32] = contract.method::<_, _>("contractType", ())?.call().await?;
-
-    Ok(ContractTypeOutput {
-        contract_type: String::from(parse_bytes32_string(&value).unwrap()),
-    })
+    contract_type(
+        &env.private_key,
+        &env.goerli_contract_address,
+        &env.goerli_url_id,
+        5,
+        abi,
+    )
+    .await
 }
 
-pub async fn allowance(
-    private_key: &str,
-    contract_address: &str,
+pub async fn goerli_allowance(
     owner_address: &str,
     spender_address: &str,
 ) -> Result<AllowanceOutput> {
-    let abi = abi_file::init().abi;
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_goerli().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
-
-    let wallet: LocalWallet = private_key.parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
-
-    let client = SignerMiddleware::new(provider, wallet);
-
-    let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-
-    let value = contract
-        .method::<_, _>(
-            "allowance",
-            (
-                owner_address.parse::<Address>()?,
-                spender_address.parse::<Address>()?,
-            ),
-        )?
-        .call()
-        .await?;
-
-    Ok(AllowanceOutput { allowance: value })
+    allowance(
+        &env.private_key,
+        &env.goerli_contract_address,
+        owner_address,
+        spender_address,
+        &env.goerli_url_id,
+        5,
+        abi,
+    )
+    .await
 }
 
-pub async fn name(private_key: &str, contract_address: &str) -> Result<NameOutput> {
-    let abi = abi_file::init().abi;
+pub async fn goerli_name() -> Result<NameOutput> {
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_goerli().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
-
-    let wallet: LocalWallet = private_key.parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
-
-    let client = SignerMiddleware::new(provider, wallet);
-
-    let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-
-    let value: String = contract.method::<_, _>("name", ())?.call().await?;
-
-    Ok(NameOutput { name: value })
+    name(
+        &env.private_key,
+        &env.goerli_contract_address,
+        &env.goerli_url_id,
+        5,
+        abi,
+    )
+    .await
 }
 
-pub async fn symbol(private_key: &str, contract_address: &str) -> Result<SymbolOutput> {
-    let abi = abi_file::init().abi;
+pub async fn goerli_symbol() -> Result<SymbolOutput> {
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_goerli().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
-
-    let wallet: LocalWallet = private_key.parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
-
-    let client = SignerMiddleware::new(provider, wallet);
-
-    let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-
-    let value: String = contract.method::<_, _>("symbol", ())?.call().await?;
-
-    Ok(SymbolOutput { symbol: value })
+    symbol(
+        &env.private_key,
+        &env.goerli_contract_address,
+        &env.goerli_url_id,
+        5,
+        abi,
+    )
+    .await
 }
 
-pub async fn mint_to(
-    private_key: &str,
-    contract_address: &str,
-    account_address: &str,
-    amount: U256,
-) -> Result<ReceiptOutput> {
-    let abi = abi_file::init().abi;
+pub async fn goerli_mint_to(account_address: &str, amount: U256) -> Result<ReceiptOutput> {
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_goerli().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
-
-    let wallet: LocalWallet = private_key.parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
-
-    let client = SignerMiddleware::new(provider, wallet);
-
-    let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-
-    let mut tx = contract
-        .method::<_, (Address, U256)>("mintTo", (account_address.parse::<Address>()?, amount))?;
-    tx.tx.set_chain_id(CHAIN_ID);
-
-    let pending_tx = tx.send().await?;
-    let receipt = pending_tx.confirmations(6).await?;
-
-    Ok(ReceiptOutput {
-        receipt: receipt.unwrap(),
-    })
+    mint_to(
+        &env.private_key,
+        &env.goerli_contract_address,
+        account_address,
+        amount,
+        &env.goerli_url_id,
+        5,
+        abi,
+        env.number_confirmations,
+    )
+    .await
 }
 
-pub async fn increase_allowance(
-    private_key: &str,
-    contract_address: &str,
+pub async fn goerli_increase_allowance(
     spender_address: &str,
     amount: U256,
 ) -> Result<ReceiptOutput> {
-    let abi = abi_file::init().abi;
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_goerli().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
-
-    let wallet: LocalWallet = private_key.parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
-
-    let client = SignerMiddleware::new(provider, wallet);
-
-    let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-
-    let mut tx = contract.method::<_, (Address, U256)>(
-        "increaseAllowance",
-        (spender_address.parse::<Address>()?, amount),
-    )?;
-    tx.tx.set_chain_id(CHAIN_ID);
-
-    let pending_tx = tx.send().await?;
-    let receipt = pending_tx.confirmations(6).await?;
-
-    Ok(ReceiptOutput {
-        receipt: receipt.unwrap(),
-    })
+    increase_allowance(
+        &env.private_key,
+        &env.goerli_contract_address,
+        spender_address,
+        amount,
+        &env.goerli_url_id,
+        5,
+        abi,
+        env.number_confirmations,
+    )
+    .await
 }
 
-pub async fn decrease_allowance(
-    private_key: &str,
-    contract_address: &str,
+pub async fn goerli_decrease_allowance(
     spender_address: &str,
     amount: U256,
 ) -> Result<ReceiptOutput> {
-    let abi = abi_file::init().abi;
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_goerli().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
-
-    let wallet: LocalWallet = private_key.parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
-
-    let client = SignerMiddleware::new(provider, wallet);
-
-    let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-
-    let mut tx = contract.method::<_, (Address, U256)>(
-        "decreaseAllowance",
-        (spender_address.parse::<Address>()?, amount),
-    )?;
-    tx.tx.set_chain_id(CHAIN_ID);
-
-    let pending_tx = tx.send().await?;
-    let receipt = pending_tx.confirmations(6).await?;
-
-    Ok(ReceiptOutput {
-        receipt: receipt.unwrap(),
-    })
+    decrease_allowance(
+        &env.private_key,
+        &env.goerli_contract_address,
+        spender_address,
+        amount,
+        &env.goerli_url_id,
+        5,
+        abi,
+        env.number_confirmations,
+    )
+    .await
 }
 
-pub async fn burn_from(
-    private_key: &str,
-    contract_address: &str,
-    account_address: &str,
-    amount: U256,
-) -> Result<ReceiptOutput> {
-    let abi = abi_file::init().abi;
+pub async fn goerli_burn_from(account_address: &str, amount: U256) -> Result<ReceiptOutput> {
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_goerli().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
-
-    let wallet: LocalWallet = private_key.parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
-
-    let client = SignerMiddleware::new(provider, wallet);
-
-    let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
-
-    let mut tx = contract
-        .method::<_, (Address, U256)>("burnFrom", (account_address.parse::<Address>()?, amount))?;
-    tx.tx.set_chain_id(CHAIN_ID);
-
-    let pending_tx = tx.send().await?;
-    let receipt = pending_tx.confirmations(6).await?;
-
-    Ok(ReceiptOutput {
-        receipt: receipt.unwrap(),
-    })
+    burn_from(
+        &env.private_key,
+        &env.goerli_contract_address,
+        account_address,
+        amount,
+        &env.goerli_url_id,
+        5,
+        abi,
+        env.number_confirmations,
+    )
+    .await
 }
 
-pub async fn transfer(
-    private_key: &str,
-    contract_address: &str,
-    account_address: &str,
+pub async fn goerli_transfer(account_address: &str, amount: U256) -> Result<ReceiptOutput> {
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_goerli().abi;
+
+    transfer(
+        &env.private_key,
+        &env.goerli_contract_address,
+        account_address,
+        amount,
+        &env.goerli_url_id,
+        5,
+        abi,
+        env.number_confirmations,
+    )
+    .await
+}
+
+pub async fn mumbai_total_supply() -> Result<TotalSupplyOutput> {
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_mumbai().abi;
+
+    total_supply(
+        &env.private_key,
+        &env.mumbai_contract_address,
+        &env.mumbai_url_id,
+        80001,
+        abi,
+    )
+    .await
+}
+
+pub async fn mumbai_contract_type() -> Result<ContractTypeOutput> {
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_mumbai().abi;
+
+    contract_type(
+        &env.private_key,
+        &env.mumbai_contract_address,
+        &env.mumbai_url_id,
+        80001,
+        abi,
+    )
+    .await
+}
+
+pub async fn mumbai_allowance(
+    owner_address: &str,
+    spender_address: &str,
+) -> Result<AllowanceOutput> {
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_mumbai().abi;
+
+    allowance(
+        &env.private_key,
+        &env.mumbai_contract_address,
+        owner_address,
+        spender_address,
+        &env.mumbai_url_id,
+        80001,
+        abi,
+    )
+    .await
+}
+
+pub async fn mumbai_name() -> Result<NameOutput> {
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_mumbai().abi;
+
+    name(
+        &env.private_key,
+        &env.mumbai_contract_address,
+        &env.mumbai_url_id,
+        80001,
+        abi,
+    )
+    .await
+}
+
+pub async fn mumbai_symbol() -> Result<SymbolOutput> {
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_mumbai().abi;
+
+    symbol(
+        &env.private_key,
+        &env.mumbai_contract_address,
+        &env.mumbai_url_id,
+        80001,
+        abi,
+    )
+    .await
+}
+
+pub async fn mumbai_mint_to(account_address: &str, amount: U256) -> Result<ReceiptOutput> {
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_mumbai().abi;
+
+    mint_to(
+        &env.private_key,
+        &env.mumbai_contract_address,
+        account_address,
+        amount,
+        &env.mumbai_url_id,
+        80001,
+        abi,
+        env.number_confirmations,
+    )
+    .await
+}
+
+pub async fn mumbai_increase_allowance(
+    spender_address: &str,
     amount: U256,
 ) -> Result<ReceiptOutput> {
-    let abi = abi_file::init().abi;
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_mumbai().abi;
 
-    let provider = Provider::try_from(URL_ID)?;
+    increase_allowance(
+        &env.private_key,
+        &env.mumbai_contract_address,
+        spender_address,
+        amount,
+        &env.mumbai_url_id,
+        80001,
+        abi,
+        env.number_confirmations,
+    )
+    .await
+}
 
-    let wallet: LocalWallet = private_key.parse()?;
-    let wallet = wallet.with_chain_id(CHAIN_ID);
+pub async fn mumbai_decrease_allowance(
+    spender_address: &str,
+    amount: U256,
+) -> Result<ReceiptOutput> {
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_mumbai().abi;
 
-    let client = SignerMiddleware::new(provider, wallet);
+    decrease_allowance(
+        &env.private_key,
+        &env.mumbai_contract_address,
+        spender_address,
+        amount,
+        &env.mumbai_url_id,
+        80001,
+        abi,
+        env.number_confirmations,
+    )
+    .await
+}
 
-    let contract = Contract::new(contract_address.parse::<Address>()?, abi, client);
+pub async fn mumbai_burn_from(account_address: &str, amount: U256) -> Result<ReceiptOutput> {
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_mumbai().abi;
 
-    let mut tx = contract
-        .method::<_, (Address, U256)>("transfer", (account_address.parse::<Address>()?, amount))?;
-    tx.tx.set_chain_id(CHAIN_ID);
+    burn_from(
+        &env.private_key,
+        &env.mumbai_contract_address,
+        account_address,
+        amount,
+        &env.mumbai_url_id,
+        80001,
+        abi,
+        env.number_confirmations,
+    )
+    .await
+}
 
-    let pending_tx = tx.send().await?;
-    let receipt = pending_tx.confirmations(6).await?;
+pub async fn mumbai_transfer(account_address: &str, amount: U256) -> Result<ReceiptOutput> {
+    dotenv().ok();
+    let env = config::init();
+    let abi = abi_file::init_mumbai().abi;
 
-    Ok(ReceiptOutput {
-        receipt: receipt.unwrap(),
-    })
+    transfer(
+        &env.private_key,
+        &env.mumbai_contract_address,
+        account_address,
+        amount,
+        &env.mumbai_url_id,
+        80001,
+        abi,
+        env.number_confirmations,
+    )
+    .await
 }
