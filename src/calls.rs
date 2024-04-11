@@ -191,7 +191,7 @@ pub async fn mumbai_total_supply() -> Result<TotalSupplyOutput> {
         &env.private_key,
         &env.mumbai_contract_address,
         &env.mumbai_url_id,
-        80001,
+        80002,
         abi,
     )
     .await
@@ -206,7 +206,7 @@ pub async fn mumbai_contract_type() -> Result<ContractTypeOutput> {
         &env.private_key,
         &env.mumbai_contract_address,
         &env.mumbai_url_id,
-        80001,
+        80002,
         abi,
     )
     .await
@@ -226,7 +226,7 @@ pub async fn mumbai_allowance(
         owner_address,
         spender_address,
         &env.mumbai_url_id,
-        80001,
+        80002,
         abi,
     )
     .await
@@ -241,7 +241,7 @@ pub async fn mumbai_name() -> Result<NameOutput> {
         &env.private_key,
         &env.mumbai_contract_address,
         &env.mumbai_url_id,
-        80001,
+        80002,
         abi,
     )
     .await
@@ -256,7 +256,7 @@ pub async fn mumbai_symbol() -> Result<SymbolOutput> {
         &env.private_key,
         &env.mumbai_contract_address,
         &env.mumbai_url_id,
-        80001,
+        80002,
         abi,
     )
     .await
@@ -273,7 +273,7 @@ pub async fn mumbai_mint_to(account_address: &str, amount: U256) -> Result<Recei
         account_address,
         amount,
         &env.mumbai_url_id,
-        80001,
+        80002,
         abi,
         env.number_confirmations,
     )
@@ -294,7 +294,7 @@ pub async fn mumbai_increase_allowance(
         spender_address,
         amount,
         &env.mumbai_url_id,
-        80001,
+        80002,
         abi,
         env.number_confirmations,
     )
@@ -315,7 +315,7 @@ pub async fn mumbai_decrease_allowance(
         spender_address,
         amount,
         &env.mumbai_url_id,
-        80001,
+        80002,
         abi,
         env.number_confirmations,
     )
@@ -333,7 +333,7 @@ pub async fn mumbai_burn_from(account_address: &str, amount: U256) -> Result<Rec
         account_address,
         amount,
         &env.mumbai_url_id,
-        80001,
+        80002,
         abi,
         env.number_confirmations,
     )
@@ -351,7 +351,7 @@ pub async fn mumbai_transfer(account_address: &str, amount: U256) -> Result<Rece
         account_address,
         amount,
         &env.mumbai_url_id,
-        80001,
+        80002,
         abi,
         env.number_confirmations,
     )
